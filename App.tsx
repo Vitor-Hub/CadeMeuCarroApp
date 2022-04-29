@@ -1,20 +1,21 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { StatusBar } from "react-native";
+import { ThemeProvider } from "styled-components/native";
+import { AuthProvider } from "./src/hooks/auth";
+import Home from "./src/screens/Home";
+import SignIn from "./src/screens/Signin";
+import theme from "./src/theme";
 
-export default function App() {
+const App = () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+    <ThemeProvider theme={theme}>
+      <StatusBar translucent backgroundColor="transparent" />
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+      <AuthProvider>
+        <Home />
+      </AuthProvider>
+    </ThemeProvider>
+  );
+};
+
+export default App;
