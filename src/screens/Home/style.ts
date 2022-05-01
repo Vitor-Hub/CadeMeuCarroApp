@@ -6,7 +6,11 @@ export const Container = styled.View`
   position: relative;
 `;
 
-export const ParkButton = styled(Button)`
+export const ButtonContent = styled.View`
   position: absolute;
   bottom: 50px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;

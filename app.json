@@ -21,10 +21,12 @@
       "adaptiveIcon": {
         "foregroundImage": "",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "userInterfaceStyle": "automatic"
     },
     "web": {
       "favicon": ""
-    }
+    },
+    "userInterfaceStyle": "automatic"
   }
 }

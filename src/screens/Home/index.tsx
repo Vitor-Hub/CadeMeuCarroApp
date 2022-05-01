@@ -5,13 +5,17 @@ import {
   LocationObject,
   requestForegroundPermissionsAsync,
 } from "expo-location";
-import { Container } from "./style";
-import { Text } from "react-native";
+import { ButtonContent, Container } from "./style";
+import { Appearance, Text } from "react-native";
 import Button from "../../components/Button";
+import { MapDarkTheme, MapLightTheme } from "../../constants";
+import "react-native-gesture-handler";
 
 function Home() {
   const [location, setLocation] = useState<LocationObject>();
   const [errorMsg, setErrorMsg] = useState<string>("");
+
+  const colorScheme = Appearance.getColorScheme();
 
   useEffect(() => {
     (async () => {
@@ -40,22 +44,25 @@ function Home() {
         <>
           <Map
             showsUserLocation
+            showsMyLocationButton
             initialRegion={{
               latitude: location.coords.latitude,
               longitude: location.coords.longitude,
               latitudeDelta: 0.0922,
               longitudeDelta: 0.0421,
             }}
-            showsMyLocationButton
-            userInterfaceStyle="dark"
+            customMapStyle={
+              colorScheme === "dark" ? MapDarkTheme : MapLightTheme
+            }
           />
-
-          <Button
-            onPress={() => {
-              console.log("te amo xuquinha");
-            }}
-            title="Estacionar"
-          />
+          <ButtonContent>
+            <Button
+              onPress={() => {
+                console.log("te amo xuquinha");
+              }}
+              title="Estacionar"
+            />
+          </ButtonContent>
         </>
       ) : (
         <Text>{errorMsg}</Text>
