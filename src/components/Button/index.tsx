@@ -1,9 +1,17 @@
-import React from 'react';
-import {ButtonProps} from 'react-native';
-import {Container} from './styles';
+import React from "react";
+import { TouchableOpacityProps } from "react-native";
+import { Container, TextButton } from "./styles";
 
-const Button = ({...rest}: ButtonProps) => {
-  return <Container {...rest} />;
+type Props = TouchableOpacityProps & {
+  title?: string;
+};
+
+const Button = ({ title, ...rest }: Props) => {
+  return (
+    <Container {...rest}>
+      <TextButton>{title}</TextButton>
+    </Container>
+  );
 };
 
 export default Button;

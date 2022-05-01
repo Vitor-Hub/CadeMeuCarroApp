@@ -1,32 +1,39 @@
 import React from "react";
-import { KeyboardAvoidingView, Platform } from "react-native";
+import { Image, ImageBackground } from "react-native";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
-import { Container, Title } from "./styles";
+import { Container, Content, Form, Logo } from "./styles";
+
+const backgroundImage = require("../../assets/signinBackground.jpeg");
+const logo = require("../../assets/logo.png");
 
 function SignIn() {
   return (
     <Container>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      <ImageBackground
+        source={backgroundImage}
+        resizeMode="cover"
+        style={{ width: "100%", flex: 1, justifyContent: "center" }}
       >
-        <Container>
-          <Title>Cadê Meu Carro</Title>
-          <Input
-            placeholder="username"
-            type="primary"
-            autoCorrect={false}
-            autoCapitalize="none"
-          />
-          <Input
-            placeholder="password"
-            type="primary"
-            autoCorrect={false}
-            autoCapitalize="none"
-          />
-          <Button onPress={() => console.log("pressed")} title="Entrar" />
-        </Container>
-      </KeyboardAvoidingView>
+        <Content>
+          <Logo source={logo} />
+          <Form>
+            <Input
+              placeholder="username"
+              type="primary"
+              autoCorrect={false}
+              autoCapitalize="none"
+            />
+            <Input
+              placeholder="password"
+              type="primary"
+              autoCorrect={false}
+              autoCapitalize="none"
+            />
+            <Button onPress={() => console.log("pressed")} title="Entrar" />
+          </Form>
+        </Content>
+      </ImageBackground>
     </Container>
   );
 }

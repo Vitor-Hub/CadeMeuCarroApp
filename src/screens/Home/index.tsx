@@ -7,6 +7,7 @@ import {
 } from "expo-location";
 import { Container } from "./style";
 import { Text } from "react-native";
+import Button from "../../components/Button";
 
 function Home() {
   const [location, setLocation] = useState<LocationObject>();
@@ -36,17 +37,26 @@ function Home() {
       location &&
       location?.coords?.latitude &&
       location?.coords?.longitude ? (
-        <Map
-          showsUserLocation
-          initialRegion={{
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-          showsMyLocationButton
-          userInterfaceStyle="dark"
-        />
+        <>
+          <Map
+            showsUserLocation
+            initialRegion={{
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}
+            showsMyLocationButton
+            userInterfaceStyle="dark"
+          />
+
+          <Button
+            onPress={() => {
+              console.log("te amo xuquinha");
+            }}
+            title="Estacionar"
+          />
+        </>
       ) : (
         <Text>{errorMsg}</Text>
       )}

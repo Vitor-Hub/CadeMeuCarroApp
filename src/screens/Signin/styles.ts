@@ -1,29 +1,35 @@
-import styled, {css} from 'styled-components/native';
-import {getBottomSpace} from 'react-native-iphone-x-helper';
+import styled, { css } from "styled-components/native";
 
 export const Container = styled.View`
-  background-color: #845ec2;
   flex: 1;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  flex-direction: column;
 `;
 
 export const Title = styled.Text`
-  ${({theme}) => css`
+  ${({ theme }) => css`
     color: ${theme.COLORS.WHITE};
   `}
   font-size: 42px;
-  align-self: flex-start;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
 `;
 
-export const Content = styled.ScrollView.attrs({
-  showsVerticalScrollIndicator: false,
-  contentContainerStyle: {
-    paddingBottom: getBottomSpace() + 48,
-  },
-})`
+export const Form = styled.View`
   width: 100%;
-  padding: 0 32px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+`;
+
+export const Content = styled.View`
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export const Logo = styled.Image`
+  width: 100%;
+  height: 280px;
 `;
