@@ -5,14 +5,25 @@ import {
   LocationObject,
   requestForegroundPermissionsAsync,
 } from "expo-location";
-import { ButtonContent, Container } from "./style";
+import { ButtonContent, Container } from "./styles";
 import { Appearance, Text } from "react-native";
 import Button from "../../components/Button";
 import { MapDarkTheme, MapLightTheme } from "../../constants";
 import "react-native-gesture-handler";
 
+interface LocationInterface {
+  parkingLocation?: {
+    longitude: number;
+    latitude: number;
+  };
+  currentLocation?: {
+    longitude: number;
+    latitude: number;
+  };
+}
+
 function Home() {
-  const [location, setLocation] = useState<LocationObject>();
+  const [location, setLocation] = useState<LocationInterface>();
   const [errorMsg, setErrorMsg] = useState<string>("");
 
   const colorScheme = Appearance.getColorScheme();
@@ -24,9 +35,14 @@ function Home() {
         setErrorMsg("Permission to access location was denied");
         return;
       }
-
-      let location = await getCurrentPositionAsync({});
-      setLocation(location);
+      let current = await getCurrentLocation();
+      setLocation({
+        ...location,
+        currentLocation: {
+          latitude: current.coords.latitude,
+          longitude: current.coords.longitude,
+        },
+      });
     })();
   }, []);
 
@@ -35,19 +51,37 @@ function Home() {
     console.log("errorMsg: ", errorMsg);
   }, [location, errorMsg]);
 
+  const getCurrentLocation = async (): Promise<LocationObject> => {
+    let current = await getCurrentPositionAsync({});
+    return current;
+  };
+
+  const goParking = async () => {
+    let latitude = (await getCurrentLocation()).coords.latitude;
+    let longitude = (await getCurrentLocation()).coords.longitude;
+
+    setLocation({
+      ...location,
+      parkingLocation: {
+        latitude: latitude,
+        longitude: longitude,
+      },
+    });
+  };
+
   return (
     <Container>
       {errorMsg === "" &&
       location &&
-      location?.coords?.latitude &&
-      location?.coords?.longitude ? (
+      location?.currentLocation?.latitude &&
+      location?.currentLocation?.longitude ? (
         <>
           <Map
             showsUserLocation
             showsMyLocationButton
             initialRegion={{
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
+              latitude: location.currentLocation.latitude,
+              longitude: location.currentLocation.longitude,
               latitudeDelta: 0.0922,
               longitudeDelta: 0.0421,
             }}
@@ -56,12 +90,7 @@ function Home() {
             }
           />
           <ButtonContent>
-            <Button
-              onPress={() => {
-                console.log("te amo xuquinha");
-              }}
-              title="Estacionar"
-            />
+            <Button onPress={() => goParking()} title="Estacionar" />
           </ButtonContent>
         </>
       ) : (
