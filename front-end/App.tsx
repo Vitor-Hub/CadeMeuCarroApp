@@ -7,6 +7,7 @@ import DrawerMenu from "./src/screens/DrawerMenu";
 import theme from "./src/theme";
 import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import SignIn from "./src/screens/Signin";
 
 const App = () => {
   const Drawer = createDrawerNavigator();
@@ -34,7 +35,7 @@ const App = () => {
             drawerContent={(props) => <DrawerMenu {...props} />}
           >
             <Drawer.Screen name="Minhas Viagens" component={Home} />
-            <Drawer.Screen name="Configurações" component={Home} />
+            <Drawer.Screen name="Configurações" component={SignIn} />
           </Drawer.Navigator>
         </NavigationContainer>
       </AuthProvider>

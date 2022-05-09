@@ -1,0 +1,10 @@
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5433,
+  "username": "postgres",
+  "password": "admin",
+  "database": "cmc-postgres-db",
+  "entities": ["dist/**/*.entity{.ts,.js}"],
+  "synchronize": true
+}
