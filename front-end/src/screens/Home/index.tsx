@@ -10,6 +10,8 @@ import { Appearance, Text } from "react-native";
 import Button from "../../components/Button";
 import { MapDarkTheme, MapLightTheme } from "../../constants";
 import "react-native-gesture-handler";
+import { postParking } from "../../services/parkings";
+import { getUserById } from "../../services/users";
 
 interface LocationInterface {
   parkingLocation?: {
@@ -47,9 +49,8 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    console.log("location: ", location);
     console.log("errorMsg: ", errorMsg);
-  }, [location, errorMsg]);
+  }, [errorMsg]);
 
   const getCurrentLocation = async (): Promise<LocationObject> => {
     let current = await getCurrentPositionAsync({});
@@ -57,8 +58,10 @@ function Home() {
   };
 
   const goParking = async () => {
-    let latitude = (await getCurrentLocation()).coords.latitude;
-    let longitude = (await getCurrentLocation()).coords.longitude;
+    console.log("start");
+    let latitude: number = (await getCurrentLocation()).coords.latitude;
+    let longitude: number = (await getCurrentLocation()).coords.longitude;
+    let description: string = "description teste";
 
     setLocation({
       ...location,
@@ -67,6 +70,8 @@ function Home() {
         longitude: longitude,
       },
     });
+
+    await postParking({ latitude, longitude, description });
   };
 
   return (
