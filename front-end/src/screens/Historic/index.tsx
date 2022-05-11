@@ -65,8 +65,6 @@ function Historic() {
   };
 
   const renderItem = ({ item }: { item: IPostParking }) => {
-    //let obj: IAddressObj = mountAddress(item);
-    //console.log("obj: ", obj);
     return (
       <HistoricContent>
         <Text>Data: {item.createdAt}</Text>

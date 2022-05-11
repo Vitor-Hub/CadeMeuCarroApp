@@ -23,10 +23,6 @@ const Map = ({ ...rest }) => {
     });
   }, [ParkingContextApi.parkingLocation]);
 
-  useEffect(() => {
-    console.log("coordinates: ", destinationLoc);
-  }, [destinationLoc]);
-
   return (
     <Container {...rest}>
       {destinationLoc &&

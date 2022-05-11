@@ -16,14 +16,19 @@ import {
   LocationObject,
   reverseGeocodeAsync,
 } from "expo-location";
+import SignIn from "./src/screens/Signin";
+import { createStackNavigator } from "@react-navigation/stack";
+import ViewContext from "./src/context/viewContext";
 
 const App = () => {
   const [location, setLocation] = useState<LocationInterface>();
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [view, setView] = useState<"Home" | "Signin">("Signin");
 
   const Drawer = createDrawerNavigator();
   const colorScheme = Appearance.getColorScheme();
+  const Stack = createStackNavigator();
 
   const getCurrentLocation = async (): Promise<LocationObject> => {
     let current = await getCurrentPositionAsync({});
@@ -63,34 +68,41 @@ const App = () => {
   }, []);
 
   return (
-    <ParkingContext.Provider value={{ ...location }}>
-      <ThemeProvider theme={theme}>
-        <StatusBar translucent backgroundColor="transparent" />
-        <AuthProvider>
-          <NavigationContainer>
-            <Drawer.Navigator
-              initialRouteName="Home"
-              screenOptions={{
-                swipeEnabled: false,
-                headerTitleStyle: {
-                  display: "none",
-                  backgroundColor: "transparent",
-                },
-                headerTransparent: true,
-                headerTintColor:
-                  colorScheme === "dark"
-                    ? theme.COLORS.WHITE
-                    : theme.COLORS.PRIMARY,
-              }}
-            >
-              <Drawer.Screen name="Estacionar" component={Home} />
-              <Drawer.Screen name="Histórico" component={Historic} />
-              <Drawer.Screen name="Configurações" component={Historic} />
-            </Drawer.Navigator>
-          </NavigationContainer>
-        </AuthProvider>
-      </ThemeProvider>
-    </ParkingContext.Provider>
+    <ViewContext.Provider value={"Signin"}>
+      <ParkingContext.Provider value={{ ...location }}>
+        <ThemeProvider theme={theme}>
+          <StatusBar translucent backgroundColor="transparent" />
+          <AuthProvider>
+            {view === "Signin" ? (
+              <SignIn setView={setView} />
+            ) : (
+              <NavigationContainer>
+                <Drawer.Navigator
+                  initialRouteName="Home"
+                  screenOptions={{
+                    swipeEnabled: false,
+                    headerTitleStyle: {
+                      display: "none",
+                      backgroundColor: "transparent",
+                    },
+                    headerTransparent: true,
+                    headerTintColor:
+                      colorScheme === "dark"
+                        ? theme.COLORS.WHITE
+                        : theme.COLORS.PRIMARY,
+                  }}
+                >
+                  <Drawer.Screen name="Estacionar" component={Home} />
+                  <Drawer.Screen name="Histórico" component={Historic} />
+                  <Drawer.Screen name="Configurações" component={Historic} />
+                  <Drawer.Screen name="Sair" component={SignIn} />
+                </Drawer.Navigator>
+              </NavigationContainer>
+            )}
+          </AuthProvider>
+        </ThemeProvider>
+      </ParkingContext.Provider>
+    </ViewContext.Provider>
   );
 };
 

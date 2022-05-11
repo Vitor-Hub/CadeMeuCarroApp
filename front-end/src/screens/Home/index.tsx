@@ -41,7 +41,9 @@ function Home() {
   const [location, setLocation] = useState<LocationInterface>();
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [isParking, setIsParking] = useState<boolean>(false);
+  const [buttonStatus, setButtonStatus] = useState<
+    "BeforeParking" | "Parking" | "AfterParking"
+  >("BeforeParking");
 
   const colorScheme = Appearance.getColorScheme();
 
@@ -62,11 +64,6 @@ function Home() {
       });
     })();
   }, []);
-
-  useEffect(() => {
-    console.log("latitude: ", location?.currentLocation?.latitude);
-    console.log("longitude: ", location?.currentLocation?.longitude);
-  }, [location?.currentLocation]);
 
   const getCurrentLocation = async (): Promise<LocationObject> => {
     let current = await getCurrentPositionAsync({});
@@ -103,7 +100,7 @@ function Home() {
     await postParking({ latitude, longitude, description })
       .then((response) => {
         console.log(response);
-        setIsParking(true);
+        setButtonStatus("AfterParking");
       })
       .catch((error) => {
         setErrorMsg(error);
@@ -111,7 +108,7 @@ function Home() {
   };
 
   const goSearch = () => {
-    setIsParking(false);
+    setButtonStatus("BeforeParking");
   };
 
   return (
@@ -136,14 +133,23 @@ function Home() {
               }
             />
             <ButtonContent>
-              {isParking ? (
+              {buttonStatus === "BeforeParking" ? (
+                <Button
+                  onPress={() => setButtonStatus("Parking")}
+                  title="Estacionar"
+                />
+              ) : buttonStatus === "Parking" ? (
                 <Button
                   color="#ff4f22"
-                  onPress={() => goSearch()}
+                  onPress={() => goParking()}
                   title="Buscar o Carro"
                 />
               ) : (
-                <Button onPress={() => goParking()} title="Estacionar" />
+                <Button
+                  color="#00FF00"
+                  onPress={() => goSearch()}
+                  title="Encontrei!"
+                />
               )}
             </ButtonContent>
             <InputContent>

@@ -1,13 +1,39 @@
-import React from "react";
-import { Image, ImageBackground } from "react-native";
+import React, { useEffect, useState } from "react";
+import { ImageBackground } from "react-native";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
+import { postUser } from "../../services/users";
 import { Container, Content, Form, Logo } from "./styles";
 
 const backgroundImage = require("../../assets/signinBackground.jpeg");
 const logo = require("../../assets/logo.png");
 
-function SignIn() {
+interface IUserInfo {
+  email: string;
+  password: string;
+}
+
+interface ISignIn {
+  setView: Function;
+}
+
+function SignIn(props: ISignIn) {
+  const [userInfo, setUserInfo] = useState<IUserInfo>({
+    email: "",
+    password: "",
+  });
+
+  const handleLoginSubmit = async () => {
+    await postUser(userInfo)
+      .then((response) => {
+        console.log(response);
+        props.setView("Home");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   return (
     <Container>
       <ImageBackground
@@ -23,14 +49,18 @@ function SignIn() {
               type="primary"
               autoCorrect={false}
               autoCapitalize="none"
+              onChangeText={(text) => setUserInfo({ ...userInfo, email: text })}
             />
             <Input
               placeholder="password"
               type="primary"
               autoCorrect={false}
               autoCapitalize="none"
+              onChangeText={(text) =>
+                setUserInfo({ ...userInfo, password: text })
+              }
             />
-            <Button onPress={() => console.log("pressed")} title="Entrar" />
+            <Button onPress={() => handleLoginSubmit()} title="Entrar" />
           </Form>
         </Content>
       </ImageBackground>
