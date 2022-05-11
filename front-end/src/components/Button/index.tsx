@@ -4,11 +4,12 @@ import { Container, TextButton } from "./styles";
 
 type Props = TouchableOpacityProps & {
   title?: string;
+  color?: string;
 };
 
-const Button = ({ title, ...rest }: Props) => {
+const Button = ({ title, color, ...rest }: Props) => {
   return (
-    <Container {...rest}>
+    <Container style={color ? { backgroundColor: color } : {}} {...rest}>
       <TextButton>{title}</TextButton>
     </Container>
   );

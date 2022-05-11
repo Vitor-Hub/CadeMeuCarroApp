@@ -4,6 +4,8 @@ import {
   getCurrentPositionAsync,
   LocationObject,
   requestForegroundPermissionsAsync,
+  LocationGeocodedAddress,
+  reverseGeocodeAsync,
 } from "expo-location";
 import { ButtonContent, Container } from "./styles";
 import { Appearance, Text } from "react-native";
@@ -11,7 +13,7 @@ import Button from "../../components/Button";
 import { MapDarkTheme, MapLightTheme } from "../../constants";
 import "react-native-gesture-handler";
 import { postParking } from "../../services/parkings";
-import { getUserById } from "../../services/users";
+import ParkingContext from "../../context/parkingContext";
 
 interface LocationInterface {
   parkingLocation?: {
@@ -22,11 +24,23 @@ interface LocationInterface {
     longitude: number;
     latitude: number;
   };
+  description?: string;
+  address?: {
+    city: string | null;
+    country: string | null;
+    isoCountryCode: string | null;
+    postalCode: string | null;
+    region: string | null;
+    street: string | null;
+    streetNumber: string | null;
+  };
 }
 
 function Home() {
   const [location, setLocation] = useState<LocationInterface>();
   const [errorMsg, setErrorMsg] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [isParking, setIsParking] = useState<boolean>(false);
 
   const colorScheme = Appearance.getColorScheme();
 
@@ -58,10 +72,13 @@ function Home() {
   };
 
   const goParking = async () => {
-    console.log("start");
     let latitude: number = (await getCurrentLocation()).coords.latitude;
     let longitude: number = (await getCurrentLocation()).coords.longitude;
-    let description: string = "description teste";
+
+    let address: LocationGeocodedAddress[] = await reverseGeocodeAsync({
+      latitude,
+      longitude,
+    });
 
     setLocation({
       ...location,
@@ -69,39 +86,70 @@ function Home() {
         latitude: latitude,
         longitude: longitude,
       },
+      description: description,
+      address: {
+        city: address[0].city,
+        country: address[0].country,
+        isoCountryCode: address[0].isoCountryCode,
+        postalCode: address[0].postalCode,
+        region: address[0].region,
+        street: address[0].street,
+        streetNumber: address[0].streetNumber,
+      },
     });
 
-    await postParking({ latitude, longitude, description });
+    await postParking({ latitude, longitude, description })
+      .then((response) => {
+        console.log(response);
+        setIsParking(true);
+      })
+      .catch((error) => {
+        setErrorMsg(error);
+      });
+  };
+
+  const goSearch = () => {
+    setIsParking(false);
   };
 
   return (
-    <Container>
-      {errorMsg === "" &&
-      location &&
-      location?.currentLocation?.latitude &&
-      location?.currentLocation?.longitude ? (
-        <>
-          <Map
-            showsUserLocation
-            showsMyLocationButton
-            initialRegion={{
-              latitude: location.currentLocation.latitude,
-              longitude: location.currentLocation.longitude,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
-            }}
-            customMapStyle={
-              colorScheme === "dark" ? MapDarkTheme : MapLightTheme
-            }
-          />
-          <ButtonContent>
-            <Button onPress={() => goParking()} title="Estacionar" />
-          </ButtonContent>
-        </>
-      ) : (
-        <Text>{errorMsg}</Text>
-      )}
-    </Container>
+    <ParkingContext.Provider value={{ ...location }}>
+      <Container>
+        {errorMsg === "" &&
+        location &&
+        location?.currentLocation?.latitude &&
+        location?.currentLocation?.longitude ? (
+          <>
+            <Map
+              showsUserLocation
+              showsMyLocationButton
+              initialRegion={{
+                latitude: location.currentLocation.latitude,
+                longitude: location.currentLocation.longitude,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              }}
+              customMapStyle={
+                colorScheme === "dark" ? MapDarkTheme : MapLightTheme
+              }
+            />
+            <ButtonContent>
+              {isParking ? (
+                <Button
+                  color="#ff4f22"
+                  onPress={() => goSearch()}
+                  title="Buscar o Carro"
+                />
+              ) : (
+                <Button onPress={() => goParking()} title="Estacionar" />
+              )}
+            </ButtonContent>
+          </>
+        ) : (
+          <Text>{errorMsg}</Text>
+        )}
+      </Container>
+    </ParkingContext.Provider>
   );
 }
 
