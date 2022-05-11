@@ -7,13 +7,14 @@ import {
   LocationGeocodedAddress,
   reverseGeocodeAsync,
 } from "expo-location";
-import { ButtonContent, Container } from "./styles";
+import { ButtonContent, Container, InputContent } from "./styles";
 import { Appearance, Text } from "react-native";
 import Button from "../../components/Button";
 import { MapDarkTheme, MapLightTheme } from "../../constants";
 import "react-native-gesture-handler";
 import { postParking } from "../../services/parkings";
 import ParkingContext from "../../context/parkingContext";
+import Input from "../../components/Input";
 
 interface LocationInterface {
   parkingLocation?: {
@@ -63,8 +64,9 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    console.log("errorMsg: ", errorMsg);
-  }, [errorMsg]);
+    console.log("latitude: ", location?.currentLocation?.latitude);
+    console.log("longitude: ", location?.currentLocation?.longitude);
+  }, [location?.currentLocation]);
 
   const getCurrentLocation = async (): Promise<LocationObject> => {
     let current = await getCurrentPositionAsync({});
@@ -83,8 +85,8 @@ function Home() {
     setLocation({
       ...location,
       parkingLocation: {
-        latitude: latitude,
-        longitude: longitude,
+        latitude: -22.9111739,
+        longitude: -43.2361323,
       },
       description: description,
       address: {
@@ -124,8 +126,8 @@ function Home() {
               showsUserLocation
               showsMyLocationButton
               initialRegion={{
-                latitude: location.currentLocation.latitude,
-                longitude: location.currentLocation.longitude,
+                latitude: -22.9111739,
+                longitude: -43.2361323,
                 latitudeDelta: 0.0922,
                 longitudeDelta: 0.0421,
               }}
@@ -144,6 +146,15 @@ function Home() {
                 <Button onPress={() => goParking()} title="Estacionar" />
               )}
             </ButtonContent>
+            <InputContent>
+              <Input
+                placeholder="Digite uma descrição (opcional)"
+                type="primary"
+                autoCorrect={false}
+                autoCapitalize="none"
+                onChangeText={(newText) => setDescription(newText)}
+              />
+            </InputContent>
           </>
         ) : (
           <Text>{errorMsg}</Text>

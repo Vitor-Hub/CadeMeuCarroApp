@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Container } from "./styles";
 import MapVewDirections from "react-native-maps-directions";
 import ParkingContext from "../../context/parkingContext";
@@ -7,36 +7,39 @@ const Map = ({ ...rest }) => {
   const ParkingContextApi = useContext(ParkingContext);
   const apiKey = "AIzaSyBVLZkRfjQMnSKcFH-Kpw_31do4KEOzRew";
 
-  const coordinates: any = [
-    {
-      latitude:
-        ParkingContextApi.currentLocation &&
-        ParkingContextApi.currentLocation.latitude,
-      longitude:
-        ParkingContextApi.currentLocation &&
-        ParkingContextApi.currentLocation.longitude,
-    },
-    {
+  const [destinationLoc, setDestionationLoc] = useState({
+    latitude: ParkingContextApi.parkingLocation?.latitude,
+    longitude: ParkingContextApi.parkingLocation?.longitude,
+  });
+
+  useEffect(() => {
+    setDestionationLoc({
       latitude:
         ParkingContextApi.parkingLocation &&
-        ParkingContextApi.parkingLocation.latitude,
+        Number(ParkingContextApi.parkingLocation.latitude),
       longitude:
         ParkingContextApi.parkingLocation &&
-        ParkingContextApi.parkingLocation.longitude,
-    },
-  ];
+        Number(ParkingContextApi.parkingLocation.longitude),
+    });
+  }, [ParkingContextApi.parkingLocation]);
+
+  useEffect(() => {
+    console.log("coordinates: ", destinationLoc);
+  }, [destinationLoc]);
 
   return (
     <Container {...rest}>
-      {coordinates[1] && (
-        <MapVewDirections
-          origin={coordinates[0]}
-          destination={coordinates[1]}
-          apikey={apiKey}
-          strokeWidth={3}
-          strokeColor="red"
-        />
-      )}
+      {destinationLoc &&
+        destinationLoc.latitude &&
+        destinationLoc.longitude && (
+          <MapVewDirections
+            origin={{ latitude: -22.9111739, longitude: -43.2361323 }}
+            destination={{ latitude: -22.9412221, longitude: -43.3594147 }}
+            apikey={apiKey}
+            strokeWidth={3}
+            strokeColor="red"
+          />
+        )}
     </Container>
   );
 };

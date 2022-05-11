@@ -7,9 +7,19 @@ export const Container = styled.View`
 
 export const ButtonContent = styled.View`
   position: absolute;
-  bottom: 50px;
+  bottom: 60px;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+export const InputContent = styled.View`
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
 `;
